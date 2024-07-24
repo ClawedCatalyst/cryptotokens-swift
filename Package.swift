@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version: 5.10
 import PackageDescription
 
 let package = Package(
@@ -12,7 +12,8 @@ let package = Package(
         .target(
             name: "cryptotokens-swift",
             resources: [
-                .process("Resources")
+                .process("Resources/branded"),
+                .process("Resources/mono")
             ]),
         .testTarget(
             name: "cryptotokens-swiftTests",
