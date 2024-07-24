@@ -4,7 +4,15 @@ public struct SVGManager {
     public static func getSVG(from folder: String, named name: String) -> Data? {
         let bundle = Bundle.module
         let resourcePath = "Resources/\(folder)/\(name).svg"
-        guard let url = bundle.url(forResource: name, subdirectory: "Resources/\(folder)") else {
+
+        if let resourceURLs = bundle.urls(forResourcesWithExtension: "svg", subdirectory: "Resources/\(folder)") {
+            print("Available resources in \(folder):")
+            for url in resourceURLs {
+                print(url)
+            }
+        }
+
+        guard let url = bundle.url(forResource: name, withExtension: "svg", subdirectory: "Resources/\(folder)") else {
             print("Resource URL not found at path: \(resourcePath)")
             return nil
         }
