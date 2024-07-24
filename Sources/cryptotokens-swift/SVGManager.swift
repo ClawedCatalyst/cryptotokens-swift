@@ -5,7 +5,7 @@ public struct SVGManager {
         let bundle = Bundle.module
         let resourcePath = "\(folder)/\(name).svg"
 
-        if let resourceURLs = bundle.urls(forResourcesWithExtension: "svg", subdirectory: "\(folder)") {
+        if let resourceURLs = bundle.urls(forResourcesWithExtension: nil, subdirectory: "\(folder)") {
             print(resourceURLs)
             print("Available resources in \(folder):")
             for url in resourceURLs {
