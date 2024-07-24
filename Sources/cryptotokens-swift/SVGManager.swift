@@ -3,9 +3,9 @@ import Foundation
 public struct SVGManager {
     public static func getSVG(from folder: String, named name: String) -> Data? {
         let bundle = Bundle.module
-        let resourcePath = "Resources/\(folder)/\(name).svg"
+        let resourcePath = "\(folder)/\(name).svg"
 
-        if let resourceURLs = bundle.urls(forResourcesWithExtension: "svg", subdirectory: "Resources/\(folder)") {
+        if let resourceURLs = bundle.urls(forResourcesWithExtension: "svg", subdirectory: "\(folder)") {
             print(resourceURLs)
             print("Available resources in \(folder):")
             for url in resourceURLs {
@@ -13,7 +13,7 @@ public struct SVGManager {
             }
         }
 
-        guard let url = bundle.url(forResource: name, withExtension: "svg", subdirectory: "Resources/\(folder)") else {
+        guard let url = bundle.url(forResource: name, withExtension: "svg", subdirectory: "\(folder)") else {
             print("Resource URL not found at path: \(resourcePath)")
             return nil
         }
