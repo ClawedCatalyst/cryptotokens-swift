@@ -2,14 +2,16 @@ import Foundation
 
 public struct SVGManager {
     public static func getSVG(from folder: String, named name: String) -> Data? {
-        let bundle = Bundle.main  // Or Bundle.module if in a Swift Package
-        print("Bundle path: \(bundle.bundlePath)")
+        // First, try to find the test bundle
+        guard let testBundle = findTestBundle() else {
+            print("Could not find the test bundle")
+            return nil
+        }
         
-        // Explore bundle contents
-        exploreBundleContents(bundle)
+        print("Test bundle path: \(testBundle.bundlePath)")
         
-        // Try to find the SVG file
-        if let svgData = findSVGFile(in: bundle, folder: folder, name: name) {
+        // Try to find the SVG file within the test bundle
+        if let svgData = findSVGFile(in: testBundle, folder: folder, name: name) {
             return svgData
         }
         
@@ -17,26 +19,25 @@ public struct SVGManager {
         return nil
     }
     
-    private static func exploreBundleContents(_ bundle: Bundle) {
-        let fileManager = FileManager.default
-        guard let enumerator = fileManager.enumerator(atPath: bundle.bundlePath) else {
-            print("Unable to create enumerator for bundle path")
-            return
-        }
+    private static func findTestBundle() -> Bundle? {
+        let testBundleName = "cryptotokens-swift_cryptotokens-swift.bundle"
         
-        print("Bundle contents:")
-        while let filePath = enumerator.nextObject() as? String {
-            if filePath.hasSuffix(".svg") {
-                print("  \(filePath)")
+        // Check if we're running in a test environment
+        if let testBundle = Bundle(identifier: "com.apple.dt.xctest.tool") {
+            // Enumerate through the test bundle to find our specific bundle
+            if let bundleURL = testBundle.url(forResource: testBundleName, withExtension: nil) {
+                return Bundle(url: bundleURL)
             }
         }
+        
+        return nil
     }
     
     private static func findSVGFile(in bundle: Bundle, folder: String, name: String) -> Data? {
         let possiblePaths = [
+            "\(name).svg",
             "\(folder)/\(name).svg",
-            "Resources/\(folder)/\(name).svg",
-            "\(name).svg"
+            "Resources/\(folder)/\(name).svg"
         ]
         
         for path in possiblePaths {
