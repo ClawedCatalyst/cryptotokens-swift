@@ -3,9 +3,9 @@ import Foundation
 public struct SVGManager {
     public static func getSVG(from folder: String, named name: String) -> Data? {
         let bundle = Bundle.module
-        let resourcePath = "Sources/cryptotokens-swift/Resources/\(folder)/\(name).svg"
+        let resourcePath = "/Resources/\(folder)/\(name).svg"
 
-        if let resourceURLs = bundle.urls(forResourcesWithExtension: nil, subdirectory: "Sources/cryptotokens-swift/Resources/\(folder)") {
+        if let resourceURLs = bundle.urls(forResourcesWithExtension: nil, subdirectory: "/Resources/\(folder)") {
             print(resourceURLs)
             print("Available resources in \(folder):")
             for url in resourceURLs {
