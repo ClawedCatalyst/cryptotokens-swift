@@ -10,17 +10,14 @@ public struct SVGManager {
         
         // Check if the file exists
         guard fileManager.fileExists(atPath: svgPath) else {
-            print("SVG file does not exist at path: \(svgPath)")
             return nil
         }
         
         // Try to read the file data
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: svgPath))
-            print("Successfully loaded SVG data for \(name).svg")
             return data
         } catch {
-            print("Error loading SVG data: \(error)")
             return nil
         }
     }
