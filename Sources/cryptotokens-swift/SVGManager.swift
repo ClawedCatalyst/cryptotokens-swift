@@ -2,46 +2,54 @@ import Foundation
 
 public struct SVGManager {
     public static func getSVG(from folder: String, named name: String) -> Data? {
-        // Use Bundle.main instead of Bundle.module if this is not in a Swift Package
-        let bundle = Bundle.main
-        let subdirectory = "Resources/\(folder)"
-
-        // Debug: Print the bundle path
+        let bundle = Bundle.main  // Or Bundle.module if in a Swift Package
         print("Bundle path: \(bundle.bundlePath)")
-
-        // List available resources in the specified folder
-        if let resourceURLs = bundle.urls(forResourcesWithExtension: "svg", subdirectory: subdirectory) {
-            print("Available SVG resources in \(subdirectory):")
-            for url in resourceURLs {
-                print(url.lastPathComponent)
-            }
-        } else {
-            print("No SVG resources found in \(subdirectory)")
+        
+        // Explore bundle contents
+        exploreBundleContents(bundle)
+        
+        // Try to find the SVG file
+        if let svgData = findSVGFile(in: bundle, folder: folder, name: name) {
+            return svgData
         }
-
-        // Try to locate the resource without specifying the subdirectory
-        if let url = bundle.url(forResource: name, withExtension: "svg") {
-            print("Found SVG at: \(url)")
-            do {
-                return try Data(contentsOf: url)
-            } catch {
-                print("Error loading SVG data: \(error)")
-                return nil
-            }
+        
+        print("Failed to find SVG file: \(name).svg in folder: \(folder)")
+        return nil
+    }
+    
+    private static func exploreBundleContents(_ bundle: Bundle) {
+        let fileManager = FileManager.default
+        guard let enumerator = fileManager.enumerator(atPath: bundle.bundlePath) else {
+            print("Unable to create enumerator for bundle path")
+            return
         }
-
-        // If not found, try with the subdirectory
-        if let url = bundle.url(forResource: name, withExtension: "svg", subdirectory: subdirectory) {
-            print("Found SVG at: \(url)")
-            do {
-                return try Data(contentsOf: url)
-            } catch {
-                print("Error loading SVG data: \(error)")
-                return nil
+        
+        print("Bundle contents:")
+        while let filePath = enumerator.nextObject() as? String {
+            if filePath.hasSuffix(".svg") {
+                print("  \(filePath)")
             }
         }
-
-        print("Resource URL not found for \(name).svg in path: \(subdirectory)")
+    }
+    
+    private static func findSVGFile(in bundle: Bundle, folder: String, name: String) -> Data? {
+        let possiblePaths = [
+            "\(folder)/\(name).svg",
+            "Resources/\(folder)/\(name).svg",
+            "\(name).svg"
+        ]
+        
+        for path in possiblePaths {
+            if let url = bundle.url(forResource: path, withExtension: nil) {
+                print("Found SVG at: \(url)")
+                do {
+                    return try Data(contentsOf: url)
+                } catch {
+                    print("Error loading SVG data from \(url): \(error)")
+                }
+            }
+        }
+        
         return nil
     }
 }
