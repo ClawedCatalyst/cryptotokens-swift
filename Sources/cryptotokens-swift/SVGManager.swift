@@ -3,21 +3,30 @@ import Foundation
 public struct SVGManager {
     public static func getSVG(from folder: String, named name: String) -> Data? {
         let bundle = Bundle.module
-        let resourcePath = "/Resources/\(folder)/\(name).svg"
+        let subdirectory = "Resources/\(folder)"
 
-        if let resourceURLs = bundle.urls(forResourcesWithExtension: nil, subdirectory: "/Resources/\(folder)") {
-            print(resourceURLs)
+        // List available resources in the specified folder
+        if let resourceURLs = bundle.urls(forResourcesWithExtension: "svg", subdirectory: subdirectory) {
             print("Available resources in \(folder):")
             for url in resourceURLs {
                 print(url.lastPathComponent)
             }
+        } else {
+            print("No resources found in \(folder)")
         }
 
-        guard let url = bundle.url(forResource: name, withExtension: "svg", subdirectory: resourcePath) else {
-            print("Resource URL not found at path: \(resourcePath)")
+        // Construct the correct resource path
+        guard let url = bundle.url(forResource: name, withExtension: "svg", subdirectory: subdirectory) else {
+            print("Resource URL not found for \(name).svg in path: \(subdirectory)")
             return nil
         }
+
         print("Loading SVG from URL: \(url)")
-        return try? Data(contentsOf: url)
+        do {
+            return try Data(contentsOf: url)
+        } catch {
+            print("Error loading SVG data: \(error)")
+            return nil
+        }
     }
 }
