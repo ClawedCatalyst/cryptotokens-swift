@@ -8,8 +8,6 @@ public struct SVGManager {
         let bundlePath = Bundle.main.bundlePath
         let svgPath = "\(bundlePath)/PlugIns/benefiTests.xctest/cryptotokens-swift_cryptotokens-swift.bundle/\(name).svg"
         
-        print("Attempting to load SVG from path: \(svgPath)")
-        
         // Check if the file exists
         guard fileManager.fileExists(atPath: svgPath) else {
             print("SVG file does not exist at path: \(svgPath)")
